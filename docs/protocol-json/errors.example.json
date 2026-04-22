@@ -1,0 +1,24 @@
+{
+  "schema": "axon.ihm.v1",
+  "deviceId": "esp32-clima-001",
+  "timestamp": "2026-04-22T14:00:14.000Z",
+  "source": "ihm",
+  "errors": [
+    {
+      "id": "err-001",
+      "deviceId": "esp32-clima-001",
+      "code": "WATER_LOW",
+      "message": "Sensor detectou falta de agua durante a operacao.",
+      "createdAt": "2026-04-22T14:00:14.000Z",
+      "recoverable": true
+    },
+    {
+      "id": "err-002",
+      "deviceId": "esp32-clima-001",
+      "code": "COMMAND_REJECTED",
+      "message": "A IHM recusou o ultimo comando porque o dispositivo estava offline.",
+      "createdAt": "2026-04-22T14:00:15.000Z",
+      "recoverable": true
+    }
+  ]
+}

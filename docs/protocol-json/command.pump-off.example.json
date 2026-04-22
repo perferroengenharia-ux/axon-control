@@ -1,0 +1,11 @@
+{
+  "schema": "axon.ihm.v1",
+  "deviceId": "esp32-clima-001",
+  "timestamp": "2026-04-22T14:00:07.000Z",
+  "source": "app",
+  "id": "cmd-pump-off-001",
+  "type": "set-pump",
+  "payload": {
+    "enabled": false
+  }
+}

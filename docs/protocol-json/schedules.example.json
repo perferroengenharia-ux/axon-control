@@ -1,0 +1,45 @@
+{
+  "schema": "axon.ihm.v1",
+  "deviceId": "esp32-clima-001",
+  "timestamp": "2026-04-22T14:00:11.000Z",
+  "source": "app",
+  "revision": "local-003",
+  "schedules": [
+    {
+      "id": "sch-001",
+      "deviceId": "esp32-clima-001",
+      "type": "power-on",
+      "recurrence": "daily",
+      "enabled": true,
+      "time": "07:30",
+      "daysOfWeek": [1, 2, 3, 4, 5],
+      "oneShotDate": null,
+      "createdAt": "2026-04-22T13:00:00.000Z",
+      "updatedAt": "2026-04-22T13:30:00.000Z"
+    },
+    {
+      "id": "sch-002",
+      "deviceId": "esp32-clima-001",
+      "type": "power-off",
+      "recurrence": "daily",
+      "enabled": true,
+      "time": "18:10",
+      "daysOfWeek": [1, 2, 3, 4, 5],
+      "oneShotDate": null,
+      "createdAt": "2026-04-22T13:10:00.000Z",
+      "updatedAt": "2026-04-22T13:40:00.000Z"
+    },
+    {
+      "id": "sch-003",
+      "deviceId": "esp32-clima-001",
+      "type": "drain-cycle",
+      "recurrence": "weekly",
+      "enabled": true,
+      "time": "19:00",
+      "daysOfWeek": [6],
+      "oneShotDate": null,
+      "createdAt": "2026-04-22T13:20:00.000Z",
+      "updatedAt": "2026-04-22T13:50:00.000Z"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+idf_component_register(
+    SRCS
+        "main.c"
+        "app_state.c"
+        "wifi_manager.c"
+        "mqtt_manager.c"
+        "local_server.c"
+        "protocol.c"
+        "protocol_topics.c"
+        "protocol_json.c"
+        "commands.c"
+        "capabilities.c"
+        "device_state.c"
+        "schedules.c"
+        "storage.c"
+        "diagnostics.c"
+        "ota.c"
+        "rs485_bridge.c"
+    INCLUDE_DIRS
+        "../include"
+    REQUIRES
+        esp_wifi
+        esp_event
+        esp_netif
+        nvs_flash
+        mqtt
+        esp_http_server
+        esp_https_ota
+        app_update
+        json
+        driver
+)

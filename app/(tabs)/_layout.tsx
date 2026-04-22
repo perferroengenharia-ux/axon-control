@@ -1,35 +1,29 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
+import { AdaptiveTabBar } from '@/src/components/adaptive-tab-bar';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
+      }}
+      tabBar={(props) => <AdaptiveTabBar {...props} />}>
       <Tabs.Screen
-        name="index"
+        name="devices"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          title: 'Dispositivos',
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="dashboard"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Dashboard',
         }}
       />
+      <Tabs.Screen name="control" options={{ title: 'Controle' }} />
+      <Tabs.Screen name="schedules" options={{ title: 'Rotinas' }} />
+      <Tabs.Screen name="diagnostics" options={{ title: 'Diagnostico' }} />
     </Tabs>
   );
 }

@@ -1,0 +1,24 @@
+{
+  "schema": "axon.ihm.v1",
+  "deviceId": "esp32-clima-001",
+  "timestamp": "2026-04-22T14:00:02.000Z",
+  "source": "ihm",
+  "capabilities": {
+    "fMinHz": 18,
+    "fMaxHz": 60,
+    "pumpAvailable": true,
+    "swingAvailable": true,
+    "drainAvailable": true,
+    "waterSensorEnabled": true,
+    "drainMode": "timed",
+    "drainTimeSec": 45,
+    "drainReturnDelaySec": 15,
+    "pumpLogicMode": "linked",
+    "waterSensorMode": "normal",
+    "preWetSec": 8,
+    "dryPanelSec": 20,
+    "dryPanelFreqHz": 22,
+    "resumeMode": "resume-last-state",
+    "autoResetMode": "enabled"
+  }
+}

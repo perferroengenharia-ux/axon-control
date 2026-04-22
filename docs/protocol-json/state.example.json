@@ -1,0 +1,21 @@
+{
+  "schema": "axon.ihm.v1",
+  "deviceId": "esp32-clima-001",
+  "timestamp": "2026-04-22T14:00:01.000Z",
+  "source": "ihm",
+  "state": {
+    "deviceOnline": true,
+    "connectionMode": "cloud",
+    "inverterRunning": true,
+    "freqCurrentHz": 34,
+    "freqTargetHz": 36,
+    "pumpState": "on",
+    "swingState": "off",
+    "drainState": "off",
+    "waterLevelState": "ok",
+    "lastSeen": "2026-04-22T14:00:01.000Z",
+    "lastCommandStatus": "applied",
+    "lastErrorCode": null,
+    "readyState": "running"
+  }
+}

@@ -1,24 +1,34 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export const unstable_settings = {
-  anchor: '(tabs)',
-};
+import { AppStoreProvider } from '@/src/store';
+import { appTheme, colors } from '@/src/theme';
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <AppStoreProvider>
+        <ThemeProvider value={appTheme}>
+          <Stack
+            screenOptions={{
+              headerShadowVisible: false,
+              headerStyle: { backgroundColor: colors.surface },
+              headerTintColor: colors.text,
+              headerTitleStyle: { fontWeight: '800', color: colors.text },
+              contentStyle: { backgroundColor: colors.surface },
+            }}>
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="device/add" options={{ title: 'Adicionar climatizador' }} />
+            <Stack.Screen name="device/[id]/edit" options={{ title: 'Editar climatizador' }} />
+            <Stack.Screen name="device/[id]/connection" options={{ title: 'Conexao' }} />
+          </Stack>
+          <StatusBar style="light" />
+        </ThemeProvider>
+      </AppStoreProvider>
+    </GestureHandlerRootView>
   );
 }

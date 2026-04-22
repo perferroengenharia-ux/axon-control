@@ -1,0 +1,12 @@
+{
+  "schema": "axon.ihm.v1",
+  "deviceId": "esp32-clima-001",
+  "timestamp": "2026-04-22T14:00:00.000Z",
+  "source": "ihm",
+  "status": {
+    "deviceOnline": true,
+    "connectionMode": "cloud",
+    "lastSeen": "2026-04-22T14:00:00.000Z",
+    "readyState": "running"
+  }
+}

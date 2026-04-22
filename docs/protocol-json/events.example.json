@@ -1,0 +1,26 @@
+{
+  "schema": "axon.ihm.v1",
+  "deviceId": "esp32-clima-001",
+  "timestamp": "2026-04-22T14:00:12.000Z",
+  "source": "ihm",
+  "events": [
+    {
+      "id": "evt-001",
+      "deviceId": "esp32-clima-001",
+      "level": "info",
+      "title": "Frequencia aplicada",
+      "message": "A IHM confirmou a nova frequencia alvo de 40 Hz.",
+      "createdAt": "2026-04-22T14:00:12.000Z",
+      "code": "FREQ_APPLIED"
+    },
+    {
+      "id": "evt-002",
+      "deviceId": "esp32-clima-001",
+      "level": "warning",
+      "title": "Dreno em execucao",
+      "message": "Rotina de dreno iniciada por comando manual.",
+      "createdAt": "2026-04-22T14:00:13.000Z",
+      "code": "DRAIN_RUNNING"
+    }
+  ]
+}
