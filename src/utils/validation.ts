@@ -24,6 +24,10 @@ export function validateMqttConfig(config: MQTTConfig) {
     errors.push('Informe uma porta MQTT valida.');
   }
 
+  if ((config.protocol === 'ws' || config.protocol === 'wss') && config.port === 8883) {
+    errors.push('No app, use a porta WebSocket do broker. Para EMQX Cloud normalmente e 8084 com WSS, nao 8883.');
+  }
+
   return errors;
 }
 

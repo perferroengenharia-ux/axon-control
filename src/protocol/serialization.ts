@@ -270,7 +270,9 @@ export function isDeviceSchedulesPayload(value: unknown): value is DeviceSchedul
     isObject(value) &&
     Array.isArray(value.schedules) &&
     value.schedules.every(isDeviceScheduleContract) &&
-    (value.revision === undefined || isString(value.revision))
+    (value.revision === undefined || isString(value.revision)) &&
+    (value.timezone === undefined || isString(value.timezone)) &&
+    (value.timezoneOffsetMinutes === undefined || isNumber(value.timezoneOffsetMinutes))
   );
 }
 

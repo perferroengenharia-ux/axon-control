@@ -14,7 +14,10 @@ import { ScheduleEditorModal } from '@/src/features/schedules/schedule-editor-mo
 import { useAppStore, useDeviceSchedules } from '@/src/store';
 import { colors, spacing, typography } from '@/src/theme';
 import type { Schedule } from '@/src/types';
+import { formatDateTime } from '@/src/utils/date';
 import { createId } from '@/src/utils/id';
+
+const weekdayLabels = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'];
 
 function formatRecurrence(schedule: Schedule) {
   if (schedule.recurrence === 'daily') {
@@ -22,7 +25,10 @@ function formatRecurrence(schedule: Schedule) {
   }
 
   if (schedule.recurrence === 'weekly') {
-    return `Semanal (${schedule.daysOfWeek.join(', ')}) as ${schedule.time}`;
+    const labels = schedule.daysOfWeek
+      .map((day) => weekdayLabels[day] ?? String(day))
+      .join(', ');
+    return `Semanal (${labels || 'sem dias'}) as ${schedule.time}`;
   }
 
   return `Unico em ${schedule.oneShotDate ?? 'sem data'} as ${schedule.time}`;
@@ -62,13 +68,16 @@ export default function SchedulesScreen() {
     const confirmDelete = () => void deleteSchedule(scheduleId);
 
     if (Platform.OS === 'web') {
-      if (typeof window !== 'undefined' && window.confirm('Excluir esta rotina local?')) {
+      if (
+        typeof window !== 'undefined' &&
+        window.confirm('Excluir esta rotina? O app e a IHM removerao esse agendamento.')
+      ) {
         confirmDelete();
       }
       return;
     }
 
-    Alert.alert('Excluir rotina', 'Esta rotina sera removida do cadastro local.', [
+    Alert.alert('Excluir rotina', 'Esta rotina sera removida do app e sincronizada com a IHM.', [
       { text: 'Cancelar', style: 'cancel' },
       { text: 'Excluir', style: 'destructive', onPress: confirmDelete },
     ]);
@@ -78,9 +87,9 @@ export default function SchedulesScreen() {
     return (
       <Screen>
         <PageHeader
-          eyebrow="Automacoes locais"
+          eyebrow="Rotinas sincronizadas"
           title="Agendamentos"
-          subtitle="Carregando dispositivos e rotinas persistidas localmente."
+          subtitle="Carregando dispositivos e rotinas salvas localmente para sincronizacao com a IHM."
         />
         <LoadingState description="Preparando os agendamentos do climatizador ativo." />
       </Screen>
@@ -91,9 +100,9 @@ export default function SchedulesScreen() {
     return (
       <Screen>
         <PageHeader
-          eyebrow="Automacoes locais"
+          eyebrow="Rotinas sincronizadas"
           title="Agendamentos"
-          subtitle="Selecione um climatizador ativo para criar rotinas locais prontas para futura sincronizacao com a IHM."
+          subtitle="Selecione um climatizador ativo para criar rotinas que serao sincronizadas com a IHM e executadas no horario programado."
         />
         <EmptyState
           title="Nenhum climatizador ativo"
@@ -107,9 +116,9 @@ export default function SchedulesScreen() {
   return (
     <Screen>
       <PageHeader
-        eyebrow="Rotinas locais"
+        eyebrow="Rotinas sincronizadas"
         title={`Agendamentos de ${activeDevice.name}`}
-        subtitle="Os agendamentos ficam persistidos localmente e a estrutura ja foi preparada para sincronizacao futura com a IHM."
+        subtitle="Os agendamentos ficam persistidos no app e sao enviados para a IHM para execucao real no horario configurado."
         actions={
           <ActionButton
             label="Nova rotina"
@@ -132,7 +141,7 @@ export default function SchedulesScreen() {
       {orderedSchedules.length === 0 ? (
         <EmptyState
           title="Nenhuma rotina criada"
-          description="Crie rotinas de ligar, desligar ou dreno. A persistencia local ja esta pronta para uma futura sincronizacao com a IHM."
+          description="Crie rotinas de ligar, desligar ou dreno. O app envia essas rotinas para a IHM e mantem o cadastro local sincronizado."
           action={
             <ActionButton
               label="Criar primeira rotina"
@@ -156,7 +165,9 @@ export default function SchedulesScreen() {
                   tone={schedule.enabled ? 'success' : 'neutral'}
                 />
               }>
-              <Text style={styles.scheduleMeta}>Atualizado em {schedule.updatedAt.slice(0, 16).replace('T', ' ')}</Text>
+              <Text style={styles.scheduleMeta}>
+                Atualizado em {formatDateTime(schedule.updatedAt)}
+              </Text>
               <View style={styles.actions}>
                 <ActionButton
                   label={schedule.enabled ? 'Pausar' : 'Ativar'}

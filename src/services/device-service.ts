@@ -14,8 +14,16 @@ import type {
   ProtocolSource,
 } from '@/src/protocol';
 import { createProtocolMetadata } from '@/src/protocol';
-import type { Command, DeviceSnapshot, DeviceSnapshotPatch, LastCommandStatus } from '@/src/types';
-import { isoNow } from '@/src/utils/date';
+import type {
+  ClimateDevice,
+  Command,
+  DeviceCapabilities,
+  DeviceSnapshot,
+  DeviceSnapshotPatch,
+  LastCommandStatus,
+} from '@/src/types';
+import { upsertCommand } from '@/src/utils/commands';
+import { getLocalTimeZone, getLocalUtcOffsetMinutes, isoNow } from '@/src/utils/date';
 import { createId } from '@/src/utils/id';
 
 type SnapshotPatchSource = DeviceSnapshotPatch;
@@ -110,6 +118,14 @@ export function createCapabilitiesPatch(payload: DeviceCapabilitiesPayload): Sna
   };
 }
 
+export function getChangedCapabilityFields(
+  current: DeviceCapabilities,
+  next: DeviceCapabilities,
+) {
+  const keys = Object.keys(next) as (keyof DeviceCapabilities)[];
+  return keys.filter((key) => current[key] !== next[key]);
+}
+
 export function createDiagnosticsPatch(payload: DeviceDiagnosticsPayload): SnapshotPatchSource {
   return {
     diagnostics: payload.diagnostics,
@@ -190,8 +206,24 @@ export function createCommandAckPatch(
         : 'A IHM rejeitou o ultimo comando enviado.',
       transportStatus: ack.accepted ? 'connected' : 'degraded',
     },
-    commands: commandRecord ? [commandRecord] : currentSnapshot.commands,
+    commands: commandRecord
+      ? upsertCommand(currentSnapshot.commands, commandRecord)
+      : currentSnapshot.commands,
   };
+}
+
+export function toProtocolSchedules(device: ClimateDevice, schedules: DeviceScheduleContract[]) {
+  return schedules.map((schedule) => ({
+    ...schedule,
+    deviceId: device.deviceId,
+  }));
+}
+
+export function fromProtocolSchedules(device: ClimateDevice, schedules: DeviceScheduleContract[]) {
+  return schedules.map((schedule) => ({
+    ...schedule,
+    deviceId: device.id,
+  }));
 }
 
 export function createSchedulesPayload(deviceId: string, schedules: DeviceScheduleContract[]) {
@@ -199,6 +231,8 @@ export function createSchedulesPayload(deviceId: string, schedules: DeviceSchedu
     ...createProtocolMetadata(deviceId, isoNow(), 'app'),
     schedules,
     revision: `local-${schedules.length}`,
+    timezone: getLocalTimeZone(),
+    timezoneOffsetMinutes: getLocalUtcOffsetMinutes(),
   };
 }
 

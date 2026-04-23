@@ -35,6 +35,9 @@ import {
   createStatePatch,
   createStatusPatch,
   createSchedulesPayload,
+  fromProtocolSchedules,
+  getChangedCapabilityFields,
+  toProtocolSchedules,
 } from '@/src/services/device-service';
 import { isoNow } from '@/src/utils/date';
 
@@ -118,16 +121,30 @@ async function refreshLocalSnapshot(
       fetchOptionalJson<LocalEventsResponse>(device, LOCAL_API_ENDPOINTS.events),
       fetchOptionalJson<LocalErrorsResponse>(device, LOCAL_API_ENDPOINTS.errors),
     ]);
+    const capabilitiesPayload = parseCapabilitiesPayload(capabilitiesResponse);
+    const changedCapabilityFields = getChangedCapabilityFields(
+      previous.capabilities,
+      capabilitiesPayload.capabilities,
+    );
+
+    if (changedCapabilityFields.length > 0) {
+      console.info(
+        `[local-http] Capabilities atualizadas para ${device.deviceId}: ${changedCapabilityFields.join(', ')}`,
+      );
+    }
 
     return {
-      ...createCapabilitiesPatch(parseCapabilitiesPayload(capabilitiesResponse)),
+      ...createCapabilitiesPatch(capabilitiesPayload),
       ...createStatusPatch(parseStatusPayload(statusResponse), getLocalMode(device)),
       ...createStatePatch(parseStatePayload(stateResponse), getLocalMode(device)),
       ...createDiagnosticsPatch({
         ...parseDiagnosticsPayload(diagnosticsResponse),
         diagnostics: {
           ...diagnosticsResponse.diagnostics,
-          connectionSummary: 'Sincronizado pela rede local da IHM.',
+          connectionSummary:
+            changedCapabilityFields.length > 0
+              ? `Capabilities locais atualizadas pela IHM: ${changedCapabilityFields.join(', ')}.`
+              : 'Sincronizado pela rede local da IHM.',
           transportStatus: 'connected',
           lastSyncAt: isoNow(),
         },
@@ -232,7 +249,7 @@ export const localHttpTransport: DeviceTransportAdapter = {
   },
 
   async saveSchedules(device, schedules: Schedule[]) {
-    const payload = createSchedulesPayload(device.deviceId, schedules);
+    const payload = createSchedulesPayload(device.deviceId, toProtocolSchedules(device, schedules));
     const response = await fetchJson<LocalSchedulesResponse>(
       device,
       LOCAL_API_ENDPOINTS.schedules,
@@ -242,6 +259,6 @@ export const localHttpTransport: DeviceTransportAdapter = {
       },
     );
 
-    return parseSchedulesPayload(response).schedules;
+    return fromProtocolSchedules(device, parseSchedulesPayload(response).schedules);
   },
 };

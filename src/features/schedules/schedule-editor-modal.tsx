@@ -55,7 +55,7 @@ export function ScheduleEditorModal({
       <View style={styles.overlay}>
         <View style={styles.modal}>
           <ScrollView contentContainerStyle={styles.modalContent} showsVerticalScrollIndicator={false}>
-            <SurfaceCard title="Agendamento" subtitle="Crie rotinas locais prontas para futura sincronizacao com a IHM.">
+            <SurfaceCard title="Agendamento" subtitle="Crie rotinas que serao salvas no app e sincronizadas com a IHM para execucao no horario configurado.">
               <SegmentedControl
                 value={draft.type}
                 options={typeOptions}

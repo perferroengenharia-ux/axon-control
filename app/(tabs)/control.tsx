@@ -15,7 +15,7 @@ import { SurfaceCard } from '@/src/components/surface-card';
 import { PeripheralTile } from '@/src/features/control/peripheral-tile';
 import { useAppStore } from '@/src/store';
 import { colors, spacing, typography } from '@/src/theme';
-import { getFeatureExplanation } from '@/src/utils/device';
+import { clampFrequency, getFeatureExplanation } from '@/src/utils/device';
 
 export default function ControlScreen() {
   const router = useRouter();
@@ -27,6 +27,32 @@ export default function ControlScreen() {
       setDraftFrequency(String(activeSnapshot.state.freqTargetHz));
     }
   }, [activeSnapshot?.state.freqTargetHz, activeSnapshot]);
+
+  useEffect(() => {
+    if (!activeSnapshot) {
+      return;
+    }
+
+    const parsedDraft = Number(draftFrequency);
+    const baseValue = Number.isFinite(parsedDraft)
+      ? parsedDraft
+      : activeSnapshot.state.freqTargetHz;
+    const clampedDraft = clampFrequency(baseValue, activeSnapshot.capabilities);
+
+    if (String(clampedDraft) !== draftFrequency) {
+      console.info(
+        `[control] Limites de frequencia atualizados para ${activeDevice?.deviceId ?? 'desconhecido'}: ${activeSnapshot.capabilities.fMinHz}-${activeSnapshot.capabilities.fMaxHz} Hz`,
+      );
+      setDraftFrequency(String(clampedDraft));
+    }
+  }, [
+    activeDevice?.deviceId,
+    activeSnapshot,
+    activeSnapshot?.capabilities.fMinHz,
+    activeSnapshot?.capabilities.fMaxHz,
+    activeSnapshot?.state.freqTargetHz,
+    draftFrequency,
+  ]);
 
   if (!state.hydrated) {
     return (

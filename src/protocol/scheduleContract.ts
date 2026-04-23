@@ -33,4 +33,6 @@ export interface DeviceScheduleContract {
 export interface DeviceSchedulesPayload extends ProtocolMetadata {
   schedules: DeviceScheduleContract[];
   revision?: string;
+  timezone?: string;
+  timezoneOffsetMinutes?: number;
 }

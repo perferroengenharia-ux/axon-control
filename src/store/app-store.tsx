@@ -676,9 +676,19 @@ export function AppStoreProvider({ children }: { children: ReactNode }) {
       mode && mode !== device.preferredConnectionMode ? { ...device, preferredConnectionMode: mode } : device;
 
     const adapter = getTransportAdapter(effectiveDevice, getSnapshotForDevice(deviceId));
-    const result = await adapter.testConnection(effectiveDevice);
-    dispatch({ type: 'set-connection-test', deviceId, result });
-    return result;
+    try {
+      const result = await adapter.testConnection(effectiveDevice);
+      dispatch({ type: 'set-connection-test', deviceId, result });
+      return result;
+    } catch (error) {
+      const result: ConnectionTestResult = {
+        ok: false,
+        mode: getInitialConnectionMode(effectiveDevice),
+        message: error instanceof Error ? error.message : 'Falha ao testar conexao.',
+      };
+      dispatch({ type: 'set-connection-test', deviceId, result });
+      return result;
+    }
   };
 
   const sendCommand = async ({ deviceId, type, payload = {} }: SendCommandInput) => {
